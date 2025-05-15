@@ -13,7 +13,7 @@ import BotaoTarefas from './BotaoTarefas.vue';
 
 export default defineComponent({
     name: 'TemporizadorTarefas',
-    emits: ['aoTemporizadorFinalizado'],
+    emits: ['aoFinalizarTarefa'],
     components: { CronometroTarefas, BotaoTarefas },
     data () {
         return {
@@ -32,7 +32,7 @@ export default defineComponent({
         finalizar() {
             this.cronometroRodando = false
             clearInterval(this.cronometro)
-            this.$emit('aoTemporizadorFinalizado', this.tempoEmSegundos)
+            this.$emit('aoFinalizarTarefa', this.tempoEmSegundos)
             this.tempoEmSegundos = 0
         }
     }

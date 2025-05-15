@@ -31,6 +31,8 @@ import { useStore } from 'vuex';
 import { key } from '@/store';
 import IProjeto from '@/interfaces/IProjeto';
 import TemporizadorTarefas from './TemporizadorTarefas.vue';
+import { NOTIFICAR } from '@/store/tipo-mutacoes';
+import { TipoNotificacao } from '@/interfaces/INotificacao';
 
 export default defineComponent({
     name: 'FormularioTarefas',
@@ -39,19 +41,34 @@ export default defineComponent({
     data() {
         return {
             descricao: '',
-            idProjeto: ''
+            idProjeto: '',
+            store: useStore(key)
         }
     },
     computed: {
         projetos(): IProjeto[] {
-            const store = useStore(key)
-            return store.state.projetos as IProjeto[]
+            return this.store.state.projetos as IProjeto[]
         }
     },
     methods: {
-        salvarTarefa(tempoDecorrido: number): void {
+        salvarTarefa(tempoEmSegundos: number): void {
+            // buscar o projeto
+            const projeto = this.projetos.find((p) => p.id == this.idProjeto);
+            
+            if (!projeto) {
+                this.store.commit(NOTIFICAR, {
+                    titulo: 'Atenção',
+                    texto: "Selecione um projeto antes de finalizar a tarefa!",
+                    tipo: TipoNotificacao.ATENCAO
+                });
+                
+                // ao fazer return aqui, o restante do método salvarTarefa
+                // não será executado. chamamos essa técnica de early return
+                return;
+            }
+
             this.$emit('aoSalvarTarefa', {
-                duracaoEmSegundos: tempoDecorrido,
+                duracaoEmSegundos: tempoEmSegundos,
                 descricao: this.descricao,
                 projeto: this.projetos.find(proj => proj.id == this.idProjeto)
             })
