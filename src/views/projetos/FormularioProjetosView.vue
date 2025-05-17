@@ -22,6 +22,7 @@ import { defineComponent } from 'vue';
 import { ADICIONA_PROJETO, ALTERA_PROJETO }  from '@/store/tipo-mutacoes';
 import { TipoNotificacao } from '@/interfaces/INotificacao';
 import { notificacaoMixin } from '@/mixins/notificar';
+import useNotificador from '@/hooks/notificador';
 
 export default defineComponent({
     name: 'FormularioProjetosView',
@@ -32,7 +33,8 @@ export default defineComponent({
     data() {
         return {
             nomeDoProjeto: '',
-            store: useStore()
+            store: useStore(),
+            notificador: useNotificador()
         }
     },
     mounted() {
